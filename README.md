@@ -1,63 +1,83 @@
-# VinFall Alert
+# VinFall
 
-Prototype hackathon: phát hiện nghi té ngã bằng camera, hỗ trợ người trực tại Vinhomes.
+Demo phát hiện nghi té ngã trên video ghi sẵn và webcam, chạy tại **http://127.0.0.1:8501/**. Dashboard tự phát nhiều video phòng mô phỏng và cảnh báo theo thời điểm video. Có chế độ upload một video, phân tích, xem lại skeleton/số đo, tải video kết quả và CSV; chế độ Webcam realtime dùng camera của máy đang chạy VinFall.
 
-## Hiện trạng
+Demo còn bỏ sót ngã và nhiều clip không đủ hiệu chuẩn. Video công khai không phải dữ liệu bệnh viện đã kiểm chứng. Kết quả này chưa chứng minh độ tin cậy thực tế.
 
-Repo khởi tạo gồm camera/video input và MediaPipe Pose Landmarker để vẽ khung xương một người. **Chưa có thuật toán phát hiện ngã, cảnh báo hoặc log sự kiện.** Không dùng prototype làm hệ thống bảo vệ an toàn.
-
-## Chạy trên Windows PowerShell
-
-Khuyến nghị Python 3.11 trong môi trường ảo riêng. Máy hiện có Python 3.9; nếu pip không tìm được bản MediaPipe phù hợp, dùng Python 3.11.
+## Chạy ngay trong workspace
 
 ```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install -e .
-.\.venv\Scripts\python.exe scripts/download_model.py
-.\.venv\Scripts\python.exe -m vinfall --source 0
+cd E:\VinAI\VinFall
+.\.venv-demo\Scripts\python.exe run_web.py
 ```
 
-Thử camera khác bằng `--source 1`; replay bằng `--source data/demo.mp4`. Nhấn Q để thoát. Cần mạng khi cài dependency và tải model; inference chạy cục bộ. Đặt camera cố định, thấy toàn thân và sàn. Chỉ dùng thành viên tự đóng vai; mô phỏng chuyển động có kiểm soát trên đệm.
+Chỉ bind `127.0.0.1:8501`, không public/tunnel. Server được giữ chạy khi bàn giao. Model và phân tích chạy local. `.venv-demo` dùng Python 3.9.13 và một số package đã có trên máy; chưa nghiệm thu cài sạch trên máy mới.
 
-## Việc cần làm trong 120 phút
+Dashboard dùng kết quả đã phân tích trong `runs/dashboard/current.json`. Phân tích lại bốn phòng, tạo model/state/history riêng cho mỗi video:
 
-| Phút | Công việc |
-| --- | --- |
-| 0–15 | Cài môi trường, chạy pose baseline, chốt góc quay |
-| 15–35 | Tính góc thân, tâm thân, lịch sử timestamp và hiệu chuẩn đứng |
-| 35–60 | NORMAL → SUSPECTED → ALERT; xử lý thiếu mốc |
-| 60–80 | Âm thanh, reset, log CSV |
-| 80–105 | Thử tình huống, chỉnh rồi khóa ngưỡng |
-| 105–120 | Đánh giá cuối, quay video dự phòng, chuẩn bị pitch |
+```powershell
+.\.venv-demo\Scripts\python.exe scripts/prepare_dashboard.py
+```
 
-## Hợp đồng dữ liệu giữa các phần
+Mặc định R01 (bàn ghế), R04 (phòng rộng), R03 (phòng làm việc), URFD-D02 (có giường). Đổi bằng `--clips R01,R02,R03,URFD-D02`. Đây là bối cảnh thay thế để mô phỏng phòng bệnh; không gán nhãn giả là camera bệnh viện. Mỗi video một người.
 
-`timestamp_ms, angle_deg, normalized_drop, landmarks_valid, state`
+Dashboard tự phát tắt tiếng, có tạm dừng tất cả, phát lại từ đầu, bật/tắt lặp và điều khiển từng video. Cảnh báo đến từ detector thật, gắn phòng và thời điểm video, giữ đến khi phát lại; lặp không nhân bản cảnh báo/CSV. Phòng thiếu hiệu chuẩn hoặc mất landmark được ghi rõ. Tải video/CSV trong “Tải báo cáo & video các phòng”. Không gửi thông báo ra ngoài localhost.
 
-- Góc tính trên tọa độ pixel, giữa trục vai–hông và phương đứng.
-- Độ dịch chuyển chuẩn hóa theo chiều cao người lúc hiệu chuẩn đứng.
-- Ngưỡng khởi đầu: nghiêng >60°, hạ tâm 20–30% chiều cao trong 0,7s, duy trì thấp/nghiêng 1–1,5s. Đây là giả thuyết cần chỉnh và đo.
-- Thiếu mốc: UNKNOWN; không cộng thời gian xác nhận. Cảnh báo đã phát giữ đến khi xác nhận.
-- Người nằm sẵn khi xuất hiện: chưa đủ bằng chứng về quá trình ngã.
+Giao diện có tổng quan số phòng/video đang phát/cảnh báo, thẻ phòng và nhật ký bên cạnh. Bấm biểu tượng mở rộng để xem lớn một phòng, hoặc “Xem lại tình huống” trong cảnh báo để phát từ khoảng 2 giây trước thời điểm cảnh báo. “Tải báo cáo & video các phòng” chứa các file đầu ra; model/cấu hình nằm trong “Thông tin phiên mô phỏng”. Trạng thái đã cảnh báo được giữ nổi bật tới khi phát lại từ đầu.
 
-## Đánh giá
+Chế độ “Phân tích một video”: upload tối đa 100 MB hoặc chọn thư viện, bấm phân tích, chờ xử lý/mã hóa H.264, xem đầu vào/kết quả và bảng sự kiện. Chọn clip khác hoặc phân tích lại tạo phiên model/state/history mới.
 
-Sau khi khóa ngưỡng: 4 lượt mô phỏng ngã, 6 lượt bình thường (đi, ngồi, cúi, squat, nằm chậm, đứng lên), 2 lượt che khuất/ra khỏi hình. Báo số phát hiện đúng, cảnh báo nhầm, độ trễ và ít nhất một ca lỗi. Tách lượt chỉnh ngưỡng khỏi lượt đánh giá.
+## Thử webcam realtime
 
-## Phân công gợi ý
+1. Mở localhost và chọn **Webcam realtime**.
+2. Chọn Camera 0 (mặc định) và model Full; đặt camera cố định thấy toàn thân/sàn.
+3. Bấm **Bắt đầu webcam**. Model khởi tạo trước; sau khi sẵn sàng có 5 giây chuẩn bị trước khi camera mở. Đứng rõ toàn thân trong 3 giây đầu có hình để hiệu chuẩn.
+4. Xem skeleton/trạng thái, FPS xử lý và cảnh báo trên trang. Nếu thiếu mốc đứng, điều chỉnh vị trí và bấm **Hiệu chuẩn lại** để tạo phiên mới với 5 giây chuẩn bị.
+5. Bấm **Dừng webcam** khi xong. Có thể tải CSV của phiên; các phiên trước nằm riêng trong `runs/webcam/`.
 
-- Camera + pose.
-- Hình học + state machine.
-- Kịch bản + nhãn + đánh giá.
-- Giao diện + log + tích hợp + pitch.
+Webcam dùng OpenCV trên **máy chạy server**, phù hợp localhost trên cùng laptop. Nó không dùng camera của thiết bị truy cập từ xa. Camera chỉ mở sau nút bắt đầu; chuyển sang chế độ video sẽ dừng camera. Phiên tự dừng sau khoảng 20 giây không có heartbeat giao diện (ví dụ đóng tab). Không ghi video/ảnh webcam ra đĩa; chỉ ghi CSV sự kiện và metadata. Mỗi lần bắt đầu/hiệu chuẩn lại tạo model, baseline và trạng thái mới.
 
-## Cấu trúc
+Webcam dùng thời gian monotonic tại lúc đọc khung hình, tính từ khung đầu, không dùng FPS metadata hoặc tốc độ inference. Capture liên tục chỉ giữ khung mới nhất; bộ phát hiện xử lý độc lập, khung xem cập nhật khoảng 5 lần/giây. `video_timestamp_ms` trong CSV webcam là thời gian từ khi camera có hình. Clip ghi sẵn vẫn dùng frame-index/FPS như trước.
 
-- `src/vinfall/`: mã ứng dụng.
-- `scripts/download_model.py`: tải model chính thức.
-- `models/`: model cục bộ, không commit.
-- `data/`: video đóng vai cục bộ, không commit.
-- `logs/`: log cục bộ, không commit.
+Nếu không mở được camera: kiểm tra quyền Camera cho ứng dụng desktop trong Windows, đóng ứng dụng khác đang dùng camera và thử chỉ số camera khác. Có thể chọn Lite để giảm tải. Tính năng hỗ trợ một người; chất lượng phát hiện ngã qua webcam chưa được kiểm chứng thực tế.
 
-Tài liệu API: https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker/python
+Kiểm tra phần cứng có chủ đích (mở camera vài giây, không lưu ảnh/video): `python scripts/verify_webcam.py`. Trên máy hiện tại đã đọc được 640×480, khoảng 25,8 FPS xử lý với Full qua script. Giao diện đã lên hình, chạy lại khi hiệu chuẩn, tải CSV và dừng khi chuyển chế độ; FPS xử lý quan sát khoảng 6–18 khi chạy giao diện (khung xem cập nhật khoảng 5 lần/giây). Đây là kiểm tra luồng camera/model, không phải nghiệm thu phát hiện ngã thật. Bằng chứng: `logs/webcam/hardware.json`, `browser.json` và `webcam-ui.jpg` (ảnh giao diện khi camera đã tắt).
+
+## Cài trên máy mới
+
+Python 3.9–3.11, CPU. Hướng dẫn này chưa được nghiệm thu cài sạch trong lượt này:
+
+```powershell
+python -m venv .venv-clean
+.\.venv-clean\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv-clean\Scripts\python.exe scripts/download_model.py --variant full
+.\.venv-clean\Scripts\python.exe scripts/download_samples.py
+.\.venv-clean\Scripts\python.exe scripts/download_room_samples.py
+.\.venv-clean\Scripts\python.exe scripts/prepare_dashboard.py
+.\.venv-clean\Scripts\python.exe run_web.py
+```
+
+Tải model/dữ liệu cần Internet; phân tích/phát lại không dùng cloud. Model/video không đưa vào Git. Nguồn và quyền sử dụng xem [DATA_SOURCES.md](DATA_SOURCES.md). Mirror Le2i chưa xác minh được giấy phép gốc: không xem video là tài sản được phép tái phân phối.
+
+## Model, logic và nguyên nhân bỏ sót
+
+MediaPipe Pose Landmarker có sẵn của Google, không train lại. So sánh Lite/Full/Heavy trên cùng clip phát triển; chọn Full cho demo, Heavy không bảo đảm tốt hơn. Góc thân 2D tính sau khi chuyển landmark sang pixel; thêm góc thân 3D từ world landmarks khi có. Góc 3D là ước lượng của model, không phải phép đo độ sâu đã hiệu chuẩn.
+
+Web hiện dùng `configs/hospital_calibration_v3.json`: nghiêng ≥60°; hạ nhanh ≥15% chiều cao đứng trong 0,7 s; “thấp” là hạ tâm thân ≥20%; hai dấu hiệu trong cửa sổ 1 s; xác nhận thấp/nghiêng 1,2 s. Bản v2 đã khóa giữ tại `configs/hospital_locked.json`; ngưỡng ban đầu 25%/25% giữ trong `configs/locked.json`. Hạ ngưỡng có thể tăng báo nhầm; đây vẫn là ngưỡng thử.
+
+Thời gian = `frame_index * 1000 / FPS`, không phụ thuộc tốc độ máy. FPS metadata lỗi bị từ chối. Cần ít nhất 15 mẫu đứng đủ landmark: chốt từ giây 2 nếu đã đủ; nếu chưa đủ thì tiếp tục thu tới giây 3 và chốt ngay khi đủ. Hết giây 3 không lấy thêm mẫu để tránh dùng tư thế sau ngã làm baseline. Bản sửa này giúp R03 hiệu chuẩn ở 2,52 s và báo ngã ở 4,76 s. Thiếu landmark không cộng thời gian xác nhận; mất quá 0,5 s hủy nghi ngờ đang chờ. ALERT giữ trong lần phân tích, CSV chỉ ghi khi chuyển vào cảnh báo.
+
+Ngã có thể bị bỏ sót vì thiếu đoạn đứng đầu, che khuất/ra khỏi khung, góc camera làm góc 2D nhỏ, mức hạ thấp chưa đủ hoặc mất mốc trước xác nhận. R01 từ bỏ sót với ngưỡng cũ đã có một cảnh báo tại 3,80 s với cấu hình mới. R01 là clip phát triển dùng chỉnh ngưỡng, chưa chứng minh tổng quát hóa. Các clip đánh giá riêng còn thất bại; xem [WEB_ACCEPTANCE.md](WEB_ACCEPTANCE.md).
+
+## Kiểm tra và bằng chứng
+
+```powershell
+$env:PYTHONPATH='src'
+.\.venv-demo\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv-demo\Scripts\python.exe scripts/audit_dashboard.py
+.\.venv-demo\Scripts\python.exe scripts/compare_models.py --manifest data/hospital_manifest.json --variants full --split eval --config configs/hospital_calibration_v3.json --output-dir logs/calibration_v3/eval_regression
+```
+
+81 kiểm thử đã chạy: cửa sổ hiệu chuẩn 2–3 giây, deadline/reset, thời gian, landmark, chuyển đổi pixel/3D, FPS, CSV, phiên độc lập, H.264 giữ thứ tự frame và vòng đời webcam. Mười test realtime kiểm tra timestamp capture, xác nhận cảnh báo, CSV không lặp, reset, lỗi camera/model, phiên bận, dừng trong lúc khởi tạo và hết heartbeat. Test pose giả lập phân biệt với chạy video thật. Checklist trong [WEB_ACCEPTANCE.md](WEB_ACCEPTANCE.md), báo cáo CLI cũ trong [ACCEPTANCE.md](ACCEPTANCE.md), ma trận bệnh viện trong [HOSPITAL_TEST_MATRIX.md](HOSPITAL_TEST_MATRIX.md).
+
+CLI cũ: `python main.py --source <video> --headless --config configs/hospital_locked.json`. Web không tự đoán/override FPS. Đầu ra lưu trong `runs/web/` và `runs/dashboard/`; lưu bằng chứng trước khi dọn thư mục.

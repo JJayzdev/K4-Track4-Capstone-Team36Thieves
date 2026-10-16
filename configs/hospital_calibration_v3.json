@@ -1,0 +1,16 @@
+{
+  "visibility_min": 0.5,
+  "calibration_ms": 2000.0,
+  "calibration_grace_ms": 1000.0,
+  "calibration_min_samples": 15,
+  "standing_max_angle_deg": 20.0,
+  "history_ms": 2000.0,
+  "angle_threshold_deg": 60.0,
+  "rapid_drop_ratio": 0.15,
+  "rapid_drop_window_ms": 700.0,
+  "coincidence_window_ms": 1000.0,
+  "low_pose_drop_ratio": 0.2,
+  "confirmation_ms": 1200.0,
+  "missing_reset_ms": 500.0,
+  "use_world_tilt": true
+}

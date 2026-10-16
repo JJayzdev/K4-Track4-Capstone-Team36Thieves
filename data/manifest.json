@@ -1,0 +1,75 @@
+{
+  "source": "https://fenix.ur.edu.pl/~mkepski/ds/uf.html",
+  "clips": [
+    {
+      "id": "D01",
+      "split": "dev",
+      "path": "data/urfd/dev/fall-01-cam0.mp4",
+      "label": "fall",
+      "crop": "right-half",
+      "onset_ms": 2933.333,
+      "sha256": "5fcb77e5b5a35d73ab8cda856ea58bd9e6acd7552e16fc6d22a623556bee76bc",
+      "onset_note": "Manual first sustained downward motion, approx +/-167 ms; not official dataset annotation"
+    },
+    {
+      "id": "D02",
+      "split": "dev",
+      "path": "data/urfd/dev/adl-01-cam0.mp4",
+      "label": "normal",
+      "crop": "right-half",
+      "onset_ms": null,
+      "sha256": "b7b0220c8081a9a8b284174f55b7ca56e5bf9a525af1bfda0ae29c73d06016f8",
+      "onset_note": "No fall onset"
+    },
+    {
+      "id": "D03",
+      "split": "dev",
+      "path": "data/urfd/dev/fall-04-cam0.mp4",
+      "label": "fall",
+      "crop": "right-half",
+      "onset_ms": 433.333,
+      "sha256": "3cee6b1d27192184b299cce8fe289f013b1d69b89ba7bc92c025da849b10cece",
+      "onset_note": "Manual first sustained downward motion, approx +/-167 ms; not official dataset annotation"
+    },
+    {
+      "id": "E01",
+      "split": "eval",
+      "path": "data/urfd/eval/fall-02-cam0.mp4",
+      "label": "fall",
+      "crop": "right-half",
+      "onset_ms": 1500,
+      "sha256": "4135a85724b5be8a248427cf49d4f28950cc1d2201434cf99f776fb4bbfd77b7",
+      "onset_note": "Manual first sustained downward motion, approx +/-167 ms; not official dataset annotation"
+    },
+    {
+      "id": "E02",
+      "split": "eval",
+      "path": "data/urfd/eval/fall-03-cam0.mp4",
+      "label": "fall",
+      "crop": "right-half",
+      "onset_ms": 5500,
+      "sha256": "6496581c9408ad87e7bbd75317e7112cb01b66755310990effa68a4badad2aff",
+      "onset_note": "Manual first sustained downward motion, approx +/-167 ms; not official dataset annotation"
+    },
+    {
+      "id": "E03",
+      "split": "eval",
+      "path": "data/urfd/eval/adl-02-cam0.mp4",
+      "label": "normal",
+      "crop": "right-half",
+      "onset_ms": null,
+      "sha256": "46d63331b14aeafc0d9cb9ddac1f44f6040a801cad7ba6eba6b930f8a3a5994a",
+      "onset_note": "No fall onset"
+    },
+    {
+      "id": "E04",
+      "split": "eval",
+      "path": "data/urfd/eval/adl-03-cam0.mp4",
+      "label": "normal",
+      "crop": "right-half",
+      "onset_ms": null,
+      "sha256": "44ec54c8ee227eaa4998fc5356bf8fd51a7d67d205ec44e3bfc3b4754fb3a3fa",
+      "onset_note": "No fall onset"
+    }
+  ]
+}
