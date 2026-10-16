@@ -1,0 +1,248 @@
+{
+  "positive_pairs": [
+    {
+      "sequence": "fall-01",
+      "cameras": [
+        {
+          "file": "fall-01-cam0.mp4",
+          "alert_times": [
+            4.3
+          ],
+          "occlusion_times": [],
+          "observations": [
+            {
+              "kind": "fall",
+              "track_id": 1,
+              "last_seen": 4.3,
+              "last_box": [
+                0.31192904710769653,
+                0.7796209454536438,
+                0.6682232022285461,
+                1.0
+              ]
+            }
+          ],
+          "tracks_created": 1
+        },
+        {
+          "file": "fall-01-cam1.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 3
+        }
+      ],
+      "alert": true
+    },
+    {
+      "sequence": "fall-03",
+      "cameras": [
+        {
+          "file": "fall-03-cam0.mp4",
+          "alert_times": [
+            6.5
+          ],
+          "occlusion_times": [],
+          "observations": [
+            {
+              "kind": "fall",
+              "track_id": 1,
+              "last_seen": 6.5,
+              "last_box": [
+                0.20657603442668915,
+                0.6274689435958862,
+                0.687550961971283,
+                0.9987851977348328
+              ]
+            }
+          ],
+          "tracks_created": 1
+        },
+        {
+          "file": "fall-03-cam1.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 2
+        }
+      ],
+      "alert": true
+    },
+    {
+      "sequence": "fall-06",
+      "cameras": [
+        {
+          "file": "fall-06-cam0.mp4",
+          "alert_times": [
+            2.1
+          ],
+          "occlusion_times": [],
+          "observations": [
+            {
+              "kind": "fall",
+              "track_id": 1,
+              "last_seen": 2.1,
+              "last_box": [
+                0.24800896644592285,
+                0.6607876420021057,
+                0.6002677083015442,
+                0.9973021149635315
+              ]
+            }
+          ],
+          "tracks_created": 1
+        },
+        {
+          "file": "fall-06-cam1.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 1
+        }
+      ],
+      "alert": true
+    },
+    {
+      "sequence": "fall-09",
+      "cameras": [
+        {
+          "file": "fall-09-cam0.mp4",
+          "alert_times": [
+            5.5
+          ],
+          "occlusion_times": [],
+          "observations": [
+            {
+              "kind": "fall",
+              "track_id": 1,
+              "last_seen": 5.5,
+              "last_box": [
+                0.06611935049295425,
+                0.5607573986053467,
+                0.5359819531440735,
+                1.0
+              ]
+            }
+          ],
+          "tracks_created": 1
+        },
+        {
+          "file": "fall-09-cam1.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 1
+        }
+      ],
+      "alert": true
+    },
+    {
+      "sequence": "fall-10",
+      "cameras": [
+        {
+          "file": "fall-10-cam0.mp4",
+          "alert_times": [
+            2.6
+          ],
+          "occlusion_times": [],
+          "observations": [
+            {
+              "kind": "fall",
+              "track_id": 1,
+              "last_seen": 2.6,
+              "last_box": [
+                0.1689492017030716,
+                0.6200549602508545,
+                0.6448010206222534,
+                1.0
+              ]
+            }
+          ],
+          "tracks_created": 1
+        },
+        {
+          "file": "fall-10-cam1.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 3
+        }
+      ],
+      "alert": true
+    }
+  ],
+  "negative_clips": [
+    {
+      "sequence": "adl-01",
+      "cameras": [
+        {
+          "file": "adl-01-cam0.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 1
+        }
+      ],
+      "alert": false
+    },
+    {
+      "sequence": "adl-09",
+      "cameras": [
+        {
+          "file": "adl-09-cam0.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 1
+        }
+      ],
+      "alert": false
+    },
+    {
+      "sequence": "adl-17",
+      "cameras": [
+        {
+          "file": "adl-17-cam0.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 1
+        }
+      ],
+      "alert": false
+    },
+    {
+      "sequence": "adl-25",
+      "cameras": [
+        {
+          "file": "adl-25-cam0.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 1
+        }
+      ],
+      "alert": false
+    },
+    {
+      "sequence": "adl-33",
+      "cameras": [
+        {
+          "file": "adl-33-cam0.mp4",
+          "alert_times": [],
+          "occlusion_times": [],
+          "observations": [],
+          "tracks_created": 2
+        }
+      ],
+      "alert": false
+    }
+  ],
+  "summary": {
+    "fall_pairs_detected": 5,
+    "fall_pairs_total": 5,
+    "normal_clips_false_alerts": 0,
+    "normal_clips_total": 5
+  },
+  "limits": "Development replay with per-person tracking of 5 demo pairs and 5 normal clips. These clips were excluded from LSTM training, but temporal confirmation rules were refined using these replays; this is NOT an independent end-to-end test or subject-independent/clinical validation. URFD has mostly one person; this report does not validate crowded scenes or occluded falls. Occlusion times are heuristic alerts, not observed falls."
+}

@@ -1,0 +1,9 @@
+{
+  "frames": 117,
+  "kind": "occlusion",
+  "room": "106",
+  "track_id": 1,
+  "missing_seconds": 8.07,
+  "current_and_last_seen_images": true,
+  "limits": "Local HTTP/JPEG integration diagnostic using a synthetic URFD composite. Disappearance simulated by removing one view. Not a real occluded fall or crowd evaluation."
+}
