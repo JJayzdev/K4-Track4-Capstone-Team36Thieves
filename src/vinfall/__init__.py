@@ -1,0 +1,1 @@
+"""VinFall Alert hackathon prototype."""
