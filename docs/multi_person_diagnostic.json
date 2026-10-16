@@ -1,0 +1,48 @@
+{
+  "limits": "Synthetic composite of two separate URFD recordings, using real YOLO and LSTM. The disappearance is simulated by replacing the left view with a flat background. This is an integration diagnostic, not an evaluation of real crowds, identity crossings or real occluded falls.",
+  "scenarios": [
+    {
+      "name": "one_falls_other_stands",
+      "max_people_detected": 2,
+      "two_person_frames": 44,
+      "total_frames": 50,
+      "tracks_created": 2,
+      "observations": [
+        {
+          "kind": "fall",
+          "track_id": 1,
+          "last_seen": 4.3,
+          "last_box": [
+            0.17112453281879425,
+            0.7813156247138977,
+            0.3305736482143402,
+            0.9990221261978149
+          ],
+          "time": 4.3
+        }
+      ]
+    },
+    {
+      "name": "one_disappears_other_stays",
+      "max_people_detected": 2,
+      "two_person_frames": 20,
+      "total_frames": 115,
+      "tracks_created": 2,
+      "observations": [
+        {
+          "kind": "occlusion",
+          "track_id": 1,
+          "last_seen": 1.9,
+          "missing_seconds": 8.0,
+          "last_box": [
+            0.28569847345352173,
+            0.1975487917661667,
+            0.3629889190196991,
+            0.6762803196907043
+          ],
+          "time": 9.9
+        }
+      ]
+    }
+  ]
+}

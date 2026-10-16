@@ -4,8 +4,16 @@ __pycache__/
 *.egg-info/
 .env
 models/*.task
+models/*.pt
+models/*.json
+models/*.npz
+models/ultralytics/
+runtime/
+*.log
 data/*
 !data/.gitkeep
 logs/*
 !logs/.gitkeep
 .pytest_cache/
+build/
+dist/

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#143f35">
+  <title>VinFall · Giám sát phòng bệnh</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.7"/><rect x="14" y="3" width="7" height="7" rx="1.7"/><rect x="3" y="14" width="7" height="7" rx="1.7"/><rect x="14" y="14" width="7" height="7" rx="1.7"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><rect x="3" y="5" width="12" height="14" rx="3"/><path d="m15 9 6-3v12l-6-3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 3H3v6M15 3h6v6M3 15v6h6M21 15v6h-6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="m11 4-6 5H2v6h3l6 5ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 2 8 3v6c0 5-4 8-8 11-4-3-8-6-8-11V5Z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-2 2m3 6a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l2-2"/></symbol>
+  </defs></svg>
+  <aside class="rail">
+    <a class="brand" href="/" title="VinFall"><svg viewBox="0 0 32 32"><path d="m6 9 10 17L26 9M10 9l6 10 6-10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <div class="rail-line"></div>
+    <nav aria-label="Điều hướng">
+      <button class="nav-button active" data-view="monitor" title="Giám sát" aria-label="Giám sát"><svg><use href="#i-grid"/></svg></button>
+      <button class="nav-button" data-view="history" title="Nhật ký cảnh báo" aria-label="Nhật ký cảnh báo"><svg><use href="#i-clock"/></svg><span id="rail-count" hidden></span></button>
+      <button class="nav-button" data-view="data" title="Nguồn video & mô hình" aria-label="Nguồn video và mô hình"><svg><use href="#i-camera"/></svg></button>
+    </nav>
+    <div class="rail-bottom"><span class="local-mark" title="Xử lý cục bộ"><svg><use href="#i-shield"/></svg></span><div class="avatar" title="Điều phối viên">YT</div></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><a href="/" class="wordmark">vinfall<span>CARE MONITOR</span></a><div class="topbar-right"><span class="mode-pill"><span></span>VIDEO + WEBCAM</span><div class="clock-wrap"><b id="clock">--:--:--</b><small id="today"></small></div></div></header>
+    <main>
+      <section class="page-heading"><div><div class="eyebrow">TRUNG TÂM THEO DÕI <span>/</span> TỔNG QUAN</div><h1 id="page-title">Giám sát phòng bệnh<span>.</span></h1><p id="page-subtitle">Theo dõi từng phòng. Kịp thời nhận biết, chủ động chăm sóc.</p></div><button class="button subtle" id="notify-button"><svg><use href="#i-bell"/></svg>Bật thông báo</button></section>
+      <div id="connection-banner" class="connection-banner" role="status">Đang kết nối đến hệ thống…</div>
+      <section class="stats" aria-label="Tổng quan hệ thống">
+        <article class="stat"><div class="stat-icon green"><svg><use href="#i-grid"/></svg></div><div><span>Phòng theo dõi</span><div class="stat-number" id="room-stat">00<small>/ 6 phòng</small></div></div><span class="stat-note">101 — 106</span></article>
+        <article class="stat"><div class="stat-icon blue"><svg><use href="#i-camera"/></svg></div><div><span>Camera đã nạp</span><div class="stat-number" id="camera-stat">00<small>camera</small></div></div><span class="stat-note">1–2 góc / phòng</span></article>
+        <article class="stat alert-stat"><div class="stat-icon coral"><svg><use href="#i-bell"/></svg></div><div><span>Cần xác nhận</span><div class="stat-number" id="alert-stat">00<small>cảnh báo</small></div></div><span class="stat-note" id="alert-note">Đang chờ dữ liệu</span></article>
+        <article class="stat model-stat"><div class="stat-icon sage"><svg><use href="#i-shield"/></svg></div><div><span>Phân tích chuyển động</span><div class="model-name">Pose + LSTM</div></div><span class="stat-note"><i class="dot" id="model-dot"></i><span id="model-status">Đang nạp</span></span></article>
+      </section>
+      <section id="monitor-view" class="view">
+        <div class="dashboard-layout"><div class="monitor-main">
+          <div class="section-toolbar"><div><h2>Luồng camera <span class="count-pill" id="camera-count">0</span></h2><p>Phát lại theo nguồn video từng phòng</p></div><div class="view-options"><label class="switch-label"><input type="checkbox" id="skeleton-toggle" checked><span></span>Khung xương</label><select id="room-filter" aria-label="Lọc phòng"><option value="all">Tất cả phòng</option><option value="alert">Có cảnh báo</option></select></div></div>
+          <div class="playback-bar"><div class="playback-actions"><button id="play-button" class="button primary" disabled><svg><use href="#i-play"/></svg><span>Bắt đầu mô phỏng</span></button><button id="restart-button" class="icon-button" title="Phát lại từ đầu" aria-label="Phát lại từ đầu" disabled><svg><use href="#i-reset"/></svg></button></div><div class="timeline"><div class="timeline-track"><span id="timeline-progress"></span></div><span id="timeline-time">00:00 / 00:00</span></div><select id="speed-select" aria-label="Tốc độ phát"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select><label class="loop-label"><input type="checkbox" id="loop-toggle">Lặp lại</label><button id="sound-button" class="icon-button" aria-label="Bật âm báo" title="Bật âm báo"><svg><use href="#i-volume"/></svg></button></div>
+          <div id="rooms-grid" class="rooms-grid"></div>
+          <div id="no-rooms" class="empty-state" hidden><svg><use href="#i-check"/></svg><h3>Chưa có phòng phát cảnh báo</h3><p>Các phòng sẽ xuất hiện tại đây khi có sự kiện.</p></div>
+          <div class="monitor-foot"><span><i class="dot"></i>Phân tích video trên máy cục bộ</span><span>UR Fall Detection Dataset · 1–2 camera / bộ</span></div>
+        </div><aside class="incident-panel"><div class="incident-heading"><div class="section-label">TRUNG TÂM CẢNH BÁO</div><h2>Cần chú ý <span id="pending-count">0</span></h2><p>Sự kiện được gộp theo phòng.</p></div><div id="alert-feed" class="alert-feed"></div><button class="history-link" data-view="history">Xem toàn bộ nhật ký<svg><use href="#i-arrow"/></svg></button><div class="room-overview"><div class="section-label">TRẠNG THÁI PHÒNG</div><div id="room-overview"></div></div><div class="care-note"><svg><use href="#i-info"/></svg><p>Cảnh báo hỗ trợ người trực kiểm tra. Video mẫu là các tình huống được dàn dựng phục vụ nghiên cứu.</p></div></aside></div>
+      </section>
+      <section id="history-view" class="view" hidden><div class="panel"><div class="panel-heading"><div><h2>Nhật ký cảnh báo</h2><p>Lưu sự kiện, phòng, camera và thời điểm phát hiện.</p></div><a class="button subtle" href="/api/alerts/export"><svg><use href="#i-download"/></svg>Xuất CSV</a></div><div class="table-scroll"><table><thead><tr><th>Thời điểm</th><th>Phòng</th><th>Nguồn video</th><th>Camera</th><th>Trạng thái</th><th></th></tr></thead><tbody id="history-body"></tbody></table></div><div id="history-empty" class="empty-state"><svg><use href="#i-clock"/></svg><h3>Chưa có sự kiện</h3><p>Bắt đầu mô phỏng để theo dõi kết quả phát hiện.</p></div></div></section>
+      <section id="data-view" class="view" hidden><div class="data-layout"><div class="panel"><div class="panel-heading"><div><h2>Nguồn video từng phòng</h2><p>Tự động hiển thị một hoặc hai camera theo video hiện có.</p></div><span class="tag">URFD</span></div><div id="source-settings"></div><div class="source-attribution"><svg><use href="#i-link"/></svg><a href="https://fenix.ur.edu.pl/~mkepski/ds/uf.html" target="_blank" rel="noreferrer">UR Fall Detection Dataset · University of Rzeszów</a><p>Video gốc gồm ảnh độ sâu + RGB. Giao diện chỉ hiển thị phần RGB. Các phòng 101–105 là nhãn mô phỏng; không phải địa điểm ghi hình gốc.</p></div></div><div class="panel model-panel"><div class="panel-heading"><div><h2>Mô hình & dữ liệu</h2><p>Phân tích khung xương theo thời gian.</p></div><svg><use href="#i-shield"/></svg></div><div class="pipeline"><span>RGB video</span><span>YOLOv8n Pose</span><span>LSTM · 16 khung</span><span>Xác nhận chuyển động</span><span>Cảnh báo theo phòng</span></div><div id="training-info">Đang đọc báo cáo huấn luyện…</div><p class="model-limit">Kết quả trên video dàn dựng chưa thể hiện hiệu quả trên bệnh nhân cao tuổi trong môi trường thực tế. Camera trên trần có thể mất điểm khớp.</p><div class="webhook-info" id="webhook-info"></div></div></div></section>
+      <section id="webcam-settings" class="panel webcam-settings" hidden>
+        <div class="panel-heading"><div><h2>Phòng 106 · Webcam & cảnh báo mất dấu</h2><p id="webcam-status">Bật webcam ở phòng 106 để giám sát trực tiếp.</p></div><span class="tag">LIVE</span></div>
+        <div class="tracking-form">
+          <label>Camera laptop<select id="webcam-device" aria-label="Chọn webcam"><option value="">Camera mặc định</option></select></label>
+          <label>Cảnh báo sau khi mất dấu (giây)<input id="missing-seconds" type="number" min="2" max="120" step="1" value="8"></label>
+          <label>Quan sát trước khi theo dõi (giây)<input id="minimum-seen" type="number" min="0.5" max="10" step="0.5" value="1"></label>
+          <label>Viền ra/vào (% khung hình)<input id="exit-margin" type="number" min="1" max="25" step="1" value="8"></label>
+        </div>
+        <div class="tracking-actions"><button id="save-tracking" class="button primary">Lưu cấu hình</button><button id="draw-exit" class="button subtle">Đánh dấu cửa ra/vào</button><button id="clear-exits" class="button subtle">Xóa vùng cửa</button></div>
+        <p class="tracking-help">Mỗi người có ID riêng trong từng camera. Người đã được quan sát đủ thời gian, mất dấu bên trong khung hình và chưa đi qua mép ảnh hoặc vùng cửa sẽ tạo cảnh báo <b>nghi té ngã do che khuất</b>. Thời gian mất dấu áp dụng cho cả video và webcam; vùng cửa được đánh dấu áp dụng cho webcam. Mất kết nối camera sẽ báo lỗi luồng và dừng theo dõi. ID có thể đổi khi người bị che lâu hoặc giao nhau.</p>
+      </section>
+      <footer><span>VinFall <b>·</b> Care starts with attention.</span><span>Giám sát cục bộ <span class="footer-dot">●</span></span></footer>
+    </main>
+  </div>
+  <div id="toast-stack" class="toast-stack" aria-live="assertive"></div>
+  <dialog id="event-dialog"><div class="dialog-top"><div><div class="eyebrow">CHI TIẾT SỰ KIỆN</div><h2 id="event-title"></h2></div><button class="icon-button close-dialog" aria-label="Đóng"><svg><use href="#i-close"/></svg></button></div><div id="event-detail"></div></dialog>
+</body>
+</html>
