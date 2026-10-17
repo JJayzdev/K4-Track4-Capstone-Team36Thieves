@@ -126,6 +126,8 @@ Payload gồm `event` (`suspected_fall`/`suspected_occluded_fall`), `event_id`, 
 
 ## Cấu trúc
 
+Hướng dẫn tạo branch, kiểm tra thay đổi và mở PR vào `main`: [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ```text
 src/vinfall/       Backend, LSTM, bộ xác nhận và giao diện static
 scripts/           Tải model/data, trích xuất pose, huấn luyện, phát lại đánh giá
