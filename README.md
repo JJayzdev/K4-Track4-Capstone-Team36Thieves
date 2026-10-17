@@ -124,9 +124,21 @@ $env:VINFALL_ALERT_WEBHOOK = 'https://your-server.example/fall-alerts'
 
 Payload gồm `event` (`suspected_fall`/`suspected_occluded_fall`), `event_id`, `room_id`, `room_name`, `source`, `video_time`, `track_id`, `kind`, `details`, `message`. Webhook gửi một lần khi tạo sự kiện phòng; các quan sát gộp thêm được giữ trong SQLite và UI. Chạy ngoài luồng giám sát với timeout 5 giây; khi gửi lỗi, sự kiện vẫn tồn tại trong SQLite và UI báo trạng thái lỗi. Prototype chưa có hàng đợi retry. Không có email/SMS được gửi mặc định.
 
-## Cấu trúc
+## API truy vấn nhật ký cảnh báo
 
-Hướng dẫn tạo branch, kiểm tra thay đổi và mở PR vào `main`: [CONTRIBUTING.md](CONTRIBUTING.md).
+`GET /api/alerts` truy vấn toàn bộ nhật ký SQLite, kể cả các sự kiện cũ ngoài 200 cảnh báo gần nhất trong snapshot dashboard.
+
+Ví dụ: `/api/alerts?room_id=106&kind=occlusion&acknowledged=false&limit=50&offset=0`.
+
+- `room_id`: lọc đúng ID phòng; bỏ qua để lấy tất cả phòng.
+- `kind`: `fall` hoặc `occlusion`; bỏ qua để lấy cả hai.
+- `acknowledged`: `true` (đã tiếp nhận) hoặc `false` (chờ xác nhận); bỏ qua để lấy cả hai.
+- `limit`: số sự kiện mỗi trang, mặc định 50, từ 1 đến 200.
+- `offset`: số sự kiện bỏ qua, mặc định 0, không âm.
+
+Kết quả có dạng `{ "items": [...], "total": 123, "limit": 50, "offset": 0 }`. `total` là tổng số sự kiện khớp bộ lọc trước phân trang. Sự kiện sắp theo thời điểm mới nhất, dùng ID để giữ thứ tự ổn định khi trùng thời điểm. Mỗi phần tử giữ đầy đủ camera, observations và thời điểm tiếp nhận. Tham số không hợp lệ trả HTTP 422; phòng không có dữ liệu hoặc trang vượt cuối trả `items: []`. Khi có sự kiện mới hoặc thay đổi trạng thái giữa hai lần gọi, vị trí trang có thể dịch chuyển.
+
+## Cấu trúc
 
 ```text
 src/vinfall/       Backend, LSTM, bộ xác nhận và giao diện static

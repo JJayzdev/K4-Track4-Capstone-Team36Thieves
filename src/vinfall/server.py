@@ -3,11 +3,12 @@ from contextlib import asynccontextmanager
 import csv
 import io
 import json
+from typing import Literal
 
 import cv2
 import numpy as np
 
-from fastapi import FastAPI, Header, HTTPException, Request, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Header, HTTPException, Query, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -154,6 +155,14 @@ def create_app(engine=None, start_engine=True):
         if stream is None or stream.path is None:
             raise HTTPException(404, "Camera chưa sẵn sàng")
         return FileResponse(stream.path, media_type="video/mp4")
+
+    @app.get("/api/alerts")
+    def alerts(limit: int = Query(50, ge=1, le=200), offset: int = Query(0, ge=0),
+               room_id: str | None = Query(None, min_length=1, max_length=64),
+               kind: Literal['fall', 'occlusion'] | None = None,
+               acknowledged: bool | None = None):
+        return monitor.events.query(limit=limit, offset=offset, room_id=room_id,
+                                    kind=kind, acknowledged=acknowledged)
 
     @app.get("/api/alerts/export")
     def export():
