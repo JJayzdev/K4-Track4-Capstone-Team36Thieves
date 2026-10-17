@@ -27,6 +27,7 @@ class EventStore:
             self.connection.execute("ALTER TABLE alerts ADD COLUMN kind TEXT NOT NULL DEFAULT 'fall'")
         if "observations" not in columns:
             self.connection.execute("ALTER TABLE alerts ADD COLUMN observations TEXT NOT NULL DEFAULT '[]'")
+        self.connection.execute("CREATE INDEX IF NOT EXISTS alerts_history_order ON alerts(created_at DESC, id DESC)")
         self.connection.commit()
 
     def create(self, room_id, room_name, source, run_id, video_time, camera, available_cameras=None,
@@ -56,12 +57,28 @@ class EventStore:
             self.connection.commit()
             return event_id, True
 
-    def list(self, limit=200):
+    def query(self, limit=200, offset=0, room_id=None, kind=None, acknowledged=None):
+        """Return a filtered page and total while blocking in-process writes."""
+        clauses, parameters = [], []
+        for column, value in (("room_id", room_id), ("kind", kind)):
+            if value is not None:
+                clauses.append(f"{column}=?")
+                parameters.append(value)
+        if acknowledged is not None:
+            clauses.append("acknowledged_at IS NOT NULL" if acknowledged else "acknowledged_at IS NULL")
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
         with self.lock:
-            rows = self.connection.execute("SELECT * FROM alerts ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
-            return [{**dict(row), "cameras": json.loads(row["cameras"]),
+            total = self.connection.execute("SELECT COUNT(*) FROM alerts" + where, parameters).fetchone()[0]
+            rows = self.connection.execute(
+                "SELECT * FROM alerts" + where + " ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?",
+                [*parameters, limit, offset]).fetchall()
+            items = [{**dict(row), "cameras": json.loads(row["cameras"]),
                      "available_cameras": json.loads(row["available_cameras"]),
                      "observations": json.loads(row['observations'])} for row in rows]
+            return {"items": items, "total": total, "limit": limit, "offset": offset}
+
+    def list(self, limit=200):
+        return self.query(limit=limit)["items"]
 
     def acknowledge(self, event_id):
         with self.lock:
